@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../objects/dish.dart';
+import '../main.dart';
 
 class Food extends StatefulWidget {
-  const Food({Key? key}) : super(key: key);
+  final Orders ordersModel;
+
+  const Food({Key? key, required this.ordersModel}) : super(key: key);
 
   @override
   State<Food> createState() => _FoodState();
@@ -187,6 +190,7 @@ class _FoodState extends State<Food> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  widget.ordersModel.addOrders(dish, quantity);
                   Navigator.pop(context);
                 },
                 child: const Text('Place Order'),

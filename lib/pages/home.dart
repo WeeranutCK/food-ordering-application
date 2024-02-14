@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../components/menu.dart';
 import '../components/settings.dart';
+import '../main.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,7 +26,9 @@ class _HomeState extends State<Home> {
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: widgetOption[indexBottomNav][0],
       ),
-      body: widgetOption[indexBottomNav][1],
+      body: Consumer<Orders>(
+        builder: (context, model, child) => widgetOption[indexBottomNav][1],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) => {
           setState(() => indexBottomNav = value)

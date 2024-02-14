@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../components/menu_pane.dart';
+import '../main.dart';
 
-class MenuAppBar extends StatelessWidget {
+class MenuAppBar extends StatefulWidget {
   const MenuAppBar({super.key});
 
   @override
+  State<MenuAppBar> createState() => _MenuAppBarState();
+}
+
+class _MenuAppBarState extends State<MenuAppBar> {
+  @override
   Widget build(BuildContext context) {
+    final ordersModel = Provider.of<Orders>(context);
+
+    String getCartNumber(int n) {
+      if (n <= 99) {
+        return n.toString();
+      } else {
+        return '99+';
+      }
+    }
+
     return AppBar(
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -21,9 +38,31 @@ class MenuAppBar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Image.asset(
-                  'assets/images/shopping-cart-icon.png',
-                  width: 35,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/cart');
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/shopping-cart-icon.png'
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        width: 30,
+                        height: 30,
+                      ),
+                      if (ordersModel.getNumbersOfOrder() > 0) 
+                        Transform.translate(
+                          offset:const Offset(-8, -8),
+                          child: NumberCircle(count: getCartNumber(ordersModel.getNumbersOfOrder())),
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -74,7 +113,7 @@ class _MenuState extends State<Menu> {
               for (String category in categoriesList)
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
@@ -106,3 +145,31 @@ class _MenuState extends State<Menu> {
     );
   }
 }
+
+class NumberCircle extends StatelessWidget {
+  final String count;
+
+  const NumberCircle({Key? key, required this.count}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      width: 25,
+      height: 25,
+      decoration: const BoxDecoration(
+        color: Colors.red,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        count,
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
